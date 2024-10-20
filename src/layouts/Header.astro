@@ -1,0 +1,34 @@
+---
+const categories = [
+  { name: "Inicio", path: "/" },
+  { name: "Clientes", path: "/clientes" },
+  { name: "Facturas", path: "/facturas" },
+  { name: "Proveedores", path: "/proveedores" },
+  { name: "Productos", path: "/productos" },
+  { name: "Pedidos", path: "/pedidos" },
+];
+---
+
+<header class="bg-primary text-white py-4 shadow-md">
+  <div class="container mx-auto flex justify-between items-center">
+    <a href="/" class="text-4xl font-bold tracking-widest">
+      <img
+        src="/src/resources/images/LogoEBDL.png"
+        alt="Logo"
+        class="h-12 w-auto"
+      />
+    </a>
+    <nav class="hidden md:flex space-x-8">
+      {
+        categories.map(({ name, path }) => (
+          <a
+            href={path}
+            class="text-lg font-medium hover:text-secondary transition duration-200"
+          >
+            {name}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
