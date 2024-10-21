@@ -1,29 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Home from "../components/Land/Land.astro";
-import Clients from "../components/Clients/Clients.astro";
-import Invoices from "../components/Bills/Bills.astro";
-
-// Get the current URL
-const url = new URL(Astro.request.url);
-const pathname = url.pathname;
-
-// Map of components based on routes
-type ComponentMap = {
-  [key: string]: (props: Record<string, any>) => any;
-};
-
-const components: ComponentMap = {
-  "/": Home,
-  "/clients": Clients,
-  "/invoices": Invoices,
-};
-
-// Determine the active component based on the route
-const ActiveComponent = components[pathname] || Home;
 ---
 
 <link rel="stylesheet" href="/src/styles/global.css" />
 <Layout>
-  <ActiveComponent />
+  <main></main>
 </Layout>
