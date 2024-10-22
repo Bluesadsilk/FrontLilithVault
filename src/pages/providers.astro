@@ -1,8 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ProviderList from "../components/Providers/Provider.List";
 ---
 
+<meta charset="UTF-8" />
 <link rel="stylesheet" href="/src/styles/global.css" />
 <Layout>
-  <main></main>
+  <ProviderList client:load />
 </Layout>

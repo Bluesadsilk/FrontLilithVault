@@ -1,7 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Product from "../components/Products/Product";
+import ProductList from "../components/Products/Products.List";
 ---
 
+<meta charset="UTF-8" />
 <link rel="stylesheet" href="/src/styles/global.css" />
-<Layout />
+<Layout>
+  <ProductList client:load />
+</Layout>
