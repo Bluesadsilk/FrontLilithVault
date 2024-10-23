@@ -6,7 +6,7 @@ import EditCategoryModal from "./EditCategoryModal";
 import DeleteCategoryModal from "./DeleteCategoryModal";
 import AddSubcategoryModal from "./AddSubcategoryModal";
 import EditSubcategoryModal from "./EditSubcategoryModal";
-import DeleteSubcategoryModal from "./DeleteSubcategoryModal";
+import DeleteSubcategoryModal from "./DeleteSubCategoryModal.jsx";
 import EditProductModal from "./EditProductModal.jsx";
 import DeleteProductModal from "./DeleteProductModal.jsx";
 
