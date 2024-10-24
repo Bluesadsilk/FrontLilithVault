@@ -27,7 +27,7 @@ const EditCategoryModal = ({ onClose, categoryId, onUpdate }) => {
     setError(null);
     try {
       const response = await fetch(`http://localhost:4000/categories/${categoryId}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },

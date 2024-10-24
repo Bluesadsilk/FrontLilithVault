@@ -19,7 +19,7 @@ const EditClientModal = ({ client, onClose }) => {
     e.preventDefault();
     try {
       const response = await fetch(`http://localhost:4000/clients/${client.clientId}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },

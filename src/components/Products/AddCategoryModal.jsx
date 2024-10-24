@@ -83,3 +83,4 @@ const AddCategoryModal = ({ onClose, onAdd }) => {
 };
 
 export default AddCategoryModal;
+  
