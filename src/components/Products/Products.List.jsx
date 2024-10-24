@@ -23,12 +23,13 @@ const ProductList = () => {
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [showEditCategoryModal, setShowEditCategoryModal] = useState(false);
-  const [showEditProductModal, setshowEditProductModal] = useState(false)
+  const [showEditProductModal, setShowEditProductModal] = useState(false);
   const [showDeleteCategoryModal, setShowDeleteCategoryModal] = useState(false);
   const [showAddSubcategoryModal, setShowAddSubcategoryModal] = useState(false);
   const [showEditSubcategoryModal, setShowEditSubcategoryModal] = useState(false);
   const [showDeleteSubcategoryModal, setShowDeleteSubcategoryModal] = useState(false);
-  const [showDeleteProductModal, setshowDeleteProductModal] = useState(false)
+  const [showDeleteProductModal, setShowDeleteProductModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null); // Añadido para manejar productos seleccionados
 
   // Funciones para cargar productos, categorías y subcategorías
   const loadProducts = async () => {
@@ -94,24 +95,22 @@ const ProductList = () => {
   // Filtrar productos por ID o nombre
   const filteredProducts = products.filter(
     (product) =>
-      product && // Assegura't que 'product' no sigui undefined
+      product && // Asegura que 'product' no sea undefined
       (
         (product.productId && product.productId.toString().includes(searchTerm)) ||
         (product.productName && product.productName.toLowerCase().includes(searchTerm.toLowerCase())) ||
         (product.category?.categoryId && product.category.categoryId.toString().includes(searchTerm))
       )
   );
-  
-  
 
   // Filtrar subcategorías por categoría seleccionada
   const filteredSubcategories = selectedCategory
-    ? subcategories.filter((subcat) => subcat.category.categoryId === selectedCategory.categoryId)
+    ? subcategories.filter((subcat) => subcat.category?.categoryId === selectedCategory.categoryId)
     : [];
 
   // Filtrar productos por subcategoría seleccionada
   const filteredBySubcategory = selectedSubcategory
-    ? filteredProducts.filter((product) => product.subcategory.subcategoryId === selectedSubcategory.subcategoryId)
+    ? filteredProducts.filter((product) => product.subcategory?.subcategoryId === selectedSubcategory.subcategoryId)
     : filteredProducts;
 
   // Limitar a los primeros diez productos
@@ -139,6 +138,12 @@ const ProductList = () => {
     );
     loadSubcategories();
     setShowDeleteSubcategoryModal(false);
+  };
+
+  // Manejo de añadir productos
+  const handleAddProduct = (newProduct) => {
+    setProducts((prevProducts) => [...prevProducts, newProduct]);
+    loadProducts();
   };
 
   return (
@@ -233,87 +238,81 @@ const ProductList = () => {
         </select>
       </div>
 
-      {loading ? (
-        <p>Cargando productos...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <div className="flex flex-wrap gap-6 justify-center">
-          {displayedProducts.map((product) => (
-            <Product key={product.productId} product={product} />
-          ))}
-        </div>
+      {/* Mostrar productos */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {loading ? (
+          <p>Cargando productos...</p>
+        ) : error ? (
+          <p>{error}</p>
+        ) : displayedProducts.length === 0 ? (
+          <p>No hay productos disponibles.</p>
+        ) : (
+          displayedProducts.map((product) => (
+            <Product
+              key={product.productId}
+              product={product}
+              onEdit={() => {
+                setSelectedProduct(product);
+                setShowEditProductModal(true);
+              }}
+              onDelete={() => {
+                setSelectedProduct(product);
+                setShowDeleteProductModal(true);
+              }}
+            />
+          ))
+        )}
+      </div>
+
+      {/* Modales */}
+      {showAddProductModal && (
+        <AddProductModal
+          onClose={() => setShowAddProductModal(false)}
+          onSave={handleAddProduct}
+        />
       )}
 
-{showAddProductModal && (
-    <AddProductModal
-      onClose={() => setShowAddProductModal(false)}
-      onAddProduct={handleAddProduct}
-    />
-  )}
+      {showEditProductModal && selectedProduct && (
+        <EditProductModal
+          product={selectedProduct}
+          onClose={() => setShowEditProductModal(false)}
+          onSave={() => {
+            loadProducts();
+            setSelectedProduct(null);
+          }}
+        />
+      )}
 
-  {showEditProductModal && (
-    <EditProductModal
-      product={selectedProduct} // Asegúrate de que `selectedProduct` esté definido
-      onClose={() => setShowEditProductModal(false)}
-      onEditProduct={handleEditProduct}
-    />
-  )}
+      {showDeleteProductModal && selectedProduct && (
+        <DeleteProductModal
+          productId={selectedProduct.productId}
+          onClose={() => setShowDeleteProductModal(false)}
+          onDelete={() => {
+            loadProducts();
+            setSelectedProduct(null);
+          }}
+        />
+      )}
 
-  {showDeleteProductModal && (
-    <DeleteProductModal
-      product={selectedProduct} // Asegúrate de que `selectedProduct` esté definido
-      onClose={() => setShowDeleteProductModal(false)}
-      onDeleteProduct={handleDeleteProduct}
-    />
-  )}
-
-  {showAddCategoryModal && (
-    <AddCategoryModal
-      onClose={() => setShowAddCategoryModal(false)}
-      onAddCategory={handleAddCategory} // Si tienes una función para manejar la adición de categorías
-    />
-  )}
-
-  {showEditCategoryModal && (
-    <EditCategoryModal
-      category={selectedCategory} // Asegúrate de que `selectedCategory` esté definido
-      onClose={() => setShowEditCategoryModal(false)}
-      onEditCategory={handleEditCategory}
-    />
-  )}
-
-  {showDeleteCategoryModal && (
-    <DeleteCategoryModal
-      category={selectedCategory} // Asegúrate de que `selectedCategory` esté definido
-      onClose={() => setShowDeleteCategoryModal(false)}
-      onDeleteCategory={handleDeleteCategory}
-    />
-  )}
-
-  {showAddSubcategoryModal && (
-    <AddSubcategoryModal
-      onClose={() => setShowAddSubcategoryModal(false)}
-      onAddSubcategory={handleAddSubcategory}
-    />
-  )}
-
-  {showEditSubcategoryModal && (
-    <EditSubcategoryModal
-      subcategory={selectedSubcategory} // Asegúrate de que `selectedSubcategory` esté definido
-      onClose={() => setShowEditSubcategoryModal(false)}
-      onEditSubcategory={handleEditSubcategory}
-    />
-  )}
-
-  {showDeleteSubcategoryModal && (
-    <DeleteSubcategoryModal
-      subcategory={selectedSubcategory} // Asegúrate de que `selectedSubcategory` esté definido
-      onClose={() => setShowDeleteSubcategoryModal(false)}
-      onDeleteSubcategory={handleDeleteSubcategory}
-    />
-  )}
-</div>
+      {showAddCategoryModal && (
+        <AddCategoryModal onClose={() => setShowAddCategoryModal(false)} onSave={loadCategories} />
+      )}
+      {showEditCategoryModal && selectedCategory && (
+        <EditCategoryModal category={selectedCategory} onClose={() => setShowEditCategoryModal(false)} onSave={loadCategories} />
+      )}
+      {showDeleteCategoryModal && selectedCategory && (
+        <DeleteCategoryModal categoryId={selectedCategory.categoryId} onClose={() => setShowDeleteCategoryModal(false)} onDelete={loadCategories} />
+      )}
+      {showAddSubcategoryModal && selectedCategory && (
+        <AddSubcategoryModal categoryId={selectedCategory.categoryId} onClose={() => setShowAddSubcategoryModal(false)} onSave={handleAddSubcategory} />
+      )}
+      {showEditSubcategoryModal && selectedSubcategory && (
+        <EditSubcategoryModal subcategory={selectedSubcategory} onClose={() => setShowEditSubcategoryModal(false)} onSave={handleEditSubcategory} />
+      )}
+      {showDeleteSubcategoryModal && selectedSubcategory && (
+        <DeleteSubcategoryModal subcategoryId={selectedSubcategory.subcategoryId} onClose={() => setShowDeleteSubcategoryModal(false)} onDelete={handleDeleteSubcategory} />
+      )}
+    </div>
   );
 };
 

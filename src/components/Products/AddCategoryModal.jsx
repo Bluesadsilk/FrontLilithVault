@@ -8,10 +8,17 @@ const AddCategoryModal = ({ onClose, onAdd }) => {
     e.preventDefault();
     setError(null);
 
-    if (!categoryName) {
+    if (!categoryName.trim()) {
       setError("El nombre de la categoría es obligatorio.");
       return;
     }
+
+    // Estructura de la solicitud POST basada en la documentación de Swagger
+    const newCategory = {
+      categoryName: categoryName.trim(),
+      subcategories: [],
+      products: [],
+    };
 
     try {
       const response = await fetch("http://localhost:4000/categories", {
@@ -19,19 +26,19 @@ const AddCategoryModal = ({ onClose, onAdd }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ categoryName }),
+        body: JSON.stringify(newCategory),
       });
 
       if (!response.ok) {
         throw new Error("Error al añadir la categoría");
       }
 
-      const newCategory = await response.json();
-      onAdd(newCategory); // Llama a la función onAdd para actualizar la lista de categorías
+      const addedCategory = await response.json();
+      onAdd(addedCategory); // Actualiza la lista de categorías con la nueva categoría
       onClose(); // Cierra el modal
     } catch (error) {
       console.error(error);
-      setError("Error al añadir la categoría");
+      setError("Error al añadir la categoría.");
     }
   };
 

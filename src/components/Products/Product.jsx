@@ -8,7 +8,10 @@ const Product = ({ product }) => {
         alt={product.productName}
         className="w-full h-48 object-cover mb-2"
       />
-      <h2 className="text-xl font-semibold">{product.productName}</h2>
+      <h2 className="text-xl font-semibold flex items-baseline space-x-2">
+  <span className="text-2xl font-bold text-gray-600">#{product.productId}</span>
+  <span className="text-xl text-gray-900">{product.productName}</span>
+</h2>
       <p className="text-gray-600">{product.productDescription}</p>
       <div className="mt-4">
         <h3 className="text-lg font-medium">Variantes</h3>
